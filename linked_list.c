@@ -58,19 +58,20 @@ void free_list(node **head) {
 	free(*head); *head = NULL;
 }
 
-void set_head_data(node **head, const char *str) {
+void set_node_data(node **node, const char *str) {
+	// XXX: DRY?
 	if (str == NULL) 
 		return;
 	if (strlen(str) >= DATASIZE) {
 		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
 	}
-	memset((*head)->data, 0, DATASIZE);
-	strncpy((*head)->data, str, DATASIZE-1);
+	memset((*node)->data, 0, DATASIZE);
+	strncpy((*node)->data, str, DATASIZE-1);
 }
 
 int main() {
 	node *list = calloc(1, sizeof(node));
-	set_head_data(&list, "Alpha (start)");
+	set_node_data(&list, "Alpha (start)");
 
 	create_add_node(&list, "Beta (start)", START);
 	create_add_node(&list, "Gamma (end)", END);
