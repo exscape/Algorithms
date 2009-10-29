@@ -12,51 +12,72 @@ typedef struct _node {
 	char data[DATASIZE];
 } node;
 
-void add_node(node *head, node *new) {
-	node *n;
-	for (n = head; n->next != NULL; n = n->next)
-		;
-	n->next = new;
-}
+enum _where {
+	START = 0,
+	END = 1
+};
 
-void create_add_node(node *head, const char *str) {
+void create_add_node(node **head, const char *str, int where) {
 	if (str == NULL) 
 		return;
 	if (strlen(str) >= DATASIZE) {
 		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
 	}
+
 	node *new = calloc(1, sizeof(node));
 	strncpy(new->data, str, DATASIZE-1);
-	new->next = NULL; /* not necessary with calloc, but it looks wrong to omit it. */
-	add_node(head, new);
+
+	if (where == START) {
+		new->next = *head;
+		*head = new;
+	}
+	else if (where == END) {
+		node *n;
+		for (n = *head; n->next != NULL; n = n->next)
+			;
+		n->next = new;
+	}
+	else {
+		fprintf(stderr, "Error: invalid \"where\" value specificed for create_add_node\n");
+		exit(1);
+	}
 }
 
-void print_list(node *head) {
-	for (node *n = head; n != NULL; n = n->next) {
+void print_list(node **head) {
+	for (node *n = *head; n != NULL; n = n->next) {
 		printf("%s\n", n->data);
 	}
 }
 
-void free_list(node *head) {
-	node *n = head;
+void free_list(node **head) {
+	// XXX: FIXME!
+	node *n = *head;
 	while ((n = n->next) != NULL) {
 		free(n->next);
 	}
-	free(head);
+	free(*head); *head = NULL;
+}
+
+void set_head_data(node **head, const char *str) {
+	if (str == NULL) 
+		return;
+	if (strlen(str) >= DATASIZE) {
+		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
+	}
+	memset((*head)->data, 0, DATASIZE);
+	strncpy((*head)->data, str, DATASIZE-1);
 }
 
 int main() {
 	node *list = calloc(1, sizeof(node));
-	strcpy(list->data, "Alpha");
+	set_head_data(&list, "Alpha (start)");
 
-	create_add_node(list, "Beta");
-	create_add_node(list, "Gamma");
-	create_add_node(list, "Omega");
+	create_add_node(&list, "Beta (start)", START);
+	create_add_node(&list, "Gamma (end)", END);
+	create_add_node(&list, "Omega (start)", START);
 
-	print_list(list);
+	print_list(&list);
 
-	free_list(list);
-
-//	free(list);
+	free_list(&list);
 	return 0;
 }
