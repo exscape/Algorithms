@@ -38,18 +38,26 @@ void print_list(node *head) {
 	}
 }
 
+void free_list(node *head) {
+	node *n = head;
+	while ((n = n->next) != NULL) {
+		free(n->next);
+	}
+	free(head);
+}
+
 int main() {
 	node *head = malloc(sizeof(node));
 	strcpy(head->data, "Alpha");
 
-	node *node2 = malloc(sizeof(node));
-	strcpy(node2->data, "Beta");
-	add_node(head, node2);
-
+	create_add_node(head, "Beta");
 	create_add_node(head, "Gamma");
 	create_add_node(head, "Omega");
 
 	print_list(head);
 
+	free_list(head);
+
+//	free(head);
 	return 0;
 }
