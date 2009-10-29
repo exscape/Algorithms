@@ -49,14 +49,6 @@ void print_list(node **head) {
 	}
 }
 
-void free_list(node **head) {
-	// XXX: FIXME!
-	node *n = *head;
-	while ((n = n->next) != NULL) {
-		free(n->next);
-	}
-	free(*head); *head = NULL;
-}
 
 void set_node_data(node **node, const char *str) {
 	// XXX: DRY?
@@ -69,15 +61,55 @@ void set_node_data(node **node, const char *str) {
 	strncpy((*node)->data, str, DATASIZE-1);
 }
 
+/* LinkedListProblems.pdf problem #1 */
+int Count(node **head, const char *needle) {
+	int count = 0;
+	for (node *n = *head; n != NULL; n = n->next) {
+		if (!strcmp(n->data, needle))
+			count++;
+	}
+
+	return count;
+}
+
+/* LinkedListProblems.pdf problem #2 */
+char *GetNth(node **head, int index) {
+	int i=0;
+	for (node *n = *head; n != NULL; n = n->next, i++) {
+		if (index == i)
+			return strdup(n->data);
+	}
+	return NULL;
+}
+
+/* LinkedListProblem.pdf problem #3, although I started writing this before finding that file */
+void free_list(node **head) {
+	// XXX: FIXME!
+	node *n = *head;
+	while ((n = n->next) != NULL) {
+		free(n->next);
+	}
+	free(*head); *head = NULL;
+}
+
 int main() {
 	node *list = calloc(1, sizeof(node));
-	set_node_data(&list, "Alpha (start)");
+	set_node_data(&list, "Alpha");
 
-	create_add_node(&list, "Beta (start)", START);
-	create_add_node(&list, "Gamma (end)", END);
-	create_add_node(&list, "Omega (start)", START);
+	create_add_node(&list, "Beta", START);
+	create_add_node(&list, "Gamma", END);
+	create_add_node(&list, "Omega", START);
+	create_add_node(&list, "Alpha", END);
 
 	print_list(&list);
+
+	printf("Count(Alpha): %d\n", Count(&list, "Alpha"));
+	printf("Count(Omega): %d\n", Count(&list, "Omega"));
+	printf("Count(Delta): %d\n", Count(&list, "Delta"));
+
+	printf("GetNth(0): %s\n", GetNth(&list, 0));
+	printf("GetNth(2): %s\n", GetNth(&list, 2));
+	printf("GetNth(20): %s\n", GetNth(&list, 20));
 
 	free_list(&list);
 	return 0;
