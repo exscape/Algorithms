@@ -25,10 +25,9 @@ void create_add_node(node *head, const char *str) {
 	if (strlen(str) >= DATASIZE) {
 		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
 	}
-	node *new = malloc(sizeof(node));
-	memset(new->data, 0, DATASIZE);
+	node *new = calloc(1, sizeof(node));
 	strncpy(new->data, str, DATASIZE-1);
-	new->next = NULL;
+	new->next = NULL; /* not necessary with calloc, but it looks wrong to omit it. */
 	add_node(head, new);
 }
 
@@ -47,7 +46,7 @@ void free_list(node *head) {
 }
 
 int main() {
-	node *list = malloc(sizeof(node));
+	node *list = calloc(1, sizeof(node));
 	strcpy(list->data, "Alpha");
 
 	create_add_node(list, "Beta");
