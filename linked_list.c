@@ -47,17 +47,17 @@ void free_list(node *head) {
 }
 
 int main() {
-	node *head = malloc(sizeof(node));
-	strcpy(head->data, "Alpha");
+	node *list = malloc(sizeof(node));
+	strcpy(list->data, "Alpha");
 
-	create_add_node(head, "Beta");
-	create_add_node(head, "Gamma");
-	create_add_node(head, "Omega");
+	create_add_node(list, "Beta");
+	create_add_node(list, "Gamma");
+	create_add_node(list, "Omega");
 
-	print_list(head);
+	print_list(list);
 
-	free_list(head);
+	free_list(list);
 
-//	free(head);
+//	free(list);
 	return 0;
 }
