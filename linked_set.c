@@ -18,8 +18,18 @@ void add_node(node *head, node *new) {
 	n->next = new;
 }
 
+uint8_t in_list(node *head, const mpz_t num) {
+	for (node *n = head; n != NULL; n = n->next) {
+		if (mpz_cmp(n->num, num) == 0)
+			return 1;
+	}
+	return 0;
+}
+
 void create_add_node(node *head, const mpz_t num) {
 	if (num == NULL)
+		return;
+	if (in_list(head, num))
 		return;
 	node *new = calloc(1, sizeof(node));
 	mpz_init(new->num);
@@ -34,6 +44,13 @@ void print_list(node *head) {
 	}
 }
 
+size_t list_length(node *head) {
+	size_t len = 0;
+	for (node *n = head; n != NULL; n = n->next)
+		len++;
+	return len;
+}
+
 void free_list(node *head) {
 /*
 	node *n = head;
@@ -46,20 +63,25 @@ void free_list(node *head) {
 */
 }
 
+void head_set_num(node *head, mpz_t num) {
+	mpz_init(head->num);
+	mpz_set(head->num, num);
+}
+
 int main() {
 	node *list = calloc(1, sizeof(node));
 	mpz_t i;
-	mpz_init_set_ui(i, 1000);
-	mpz_set(list->num, i); // XXX: Wrapper function!
+	mpz_init_set_ui(i, 2*2); // a^b where a or b = 2
+	head_set_num(list, i);
 
-	mpz_mul_ui(i, i, 10);
-	create_add_node(list, i);
-	mpz_mul_ui(i, i, 10);
-	create_add_node(list, i);
-	mpz_mul_ui(i, i, 10);
-	create_add_node(list, i);
+	for (int a=2; a <= 100; a++) {
+		for (int b=2; b <= 100; b++) {
+			mpz_ui_pow_ui(i, a, b);
+			create_add_node(list, i);
+		}
+	}
 
-	print_list(list);
+	printf("list has %zu elements\n", list_length(list));
 
 	free_list(list);
 
