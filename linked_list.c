@@ -17,6 +17,16 @@ enum _where {
 	END = 1
 };
 
+void set_node_data(node **node, const char *str) {
+	if (str == NULL) 
+		return;
+	if (strlen(str) >= DATASIZE) {
+		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
+	}
+	memset((*node)->data, 0, DATASIZE);
+	strncpy((*node)->data, str, DATASIZE-1);
+}
+
 void create_add_node(node **head, const char *str, int where) {
 	if (str == NULL) 
 		return;
@@ -24,8 +34,9 @@ void create_add_node(node **head, const char *str, int where) {
 		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
 	}
 
-	node *new = calloc(1, sizeof(node));
-	strncpy(new->data, str, DATASIZE-1);
+	node *new = malloc(sizeof(node));
+	set_node_data(&new, str);
+	new->next = NULL;
 
 	if (where == START) {
 		new->next = *head;
@@ -47,18 +58,6 @@ void print_list(node **head) {
 	for (node *n = *head; n != NULL; n = n->next) {
 		printf("%s\n", n->data);
 	}
-}
-
-
-void set_node_data(node **node, const char *str) {
-	// XXX: DRY?
-	if (str == NULL) 
-		return;
-	if (strlen(str) >= DATASIZE) {
-		fprintf(stderr, "Warning: string %s truncated to %d characters\n", str, DATASIZE-1);
-	}
-	memset((*node)->data, 0, DATASIZE);
-	strncpy((*node)->data, str, DATASIZE-1);
 }
 
 /* LinkedListProblems.pdf problem #1 */
