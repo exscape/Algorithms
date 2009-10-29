@@ -6,6 +6,8 @@
 
 /* Written: 2009-10-29, XXX */
 
+static uint64_t total_loops = 0;
+
 typedef struct _node {
 	struct _node *next;
 	mpz_t num;
@@ -14,12 +16,13 @@ typedef struct _node {
 void add_node(node *head, node *new) {
 	node *n;
 	for (n = head; n->next != NULL; n = n->next)
-		;
+		total_loops++;
 	n->next = new;
 }
 
 uint8_t in_list(node *head, const mpz_t num) {
 	for (node *n = head; n != NULL; n = n->next) {
+		total_loops++;
 		if (mpz_cmp(n->num, num) == 0)
 			return 1;
 	}
@@ -46,8 +49,10 @@ void print_list(node *head) {
 
 size_t list_length(node *head) {
 	size_t len = 0;
-	for (node *n = head; n != NULL; n = n->next)
+	for (node *n = head; n != NULL; n = n->next) {
+		total_loops++;
 		len++;
+	}
 	return len;
 }
 
@@ -76,12 +81,13 @@ int main() {
 
 	for (int a=2; a <= 100; a++) {
 		for (int b=2; b <= 100; b++) {
+			total_loops++;
 			mpz_ui_pow_ui(i, a, b);
 			create_add_node(list, i);
 		}
 	}
 
-	printf("list has %zu elements\n", list_length(list));
+	printf("list has %zu elements; %lu loops\n", list_length(list), total_loops);
 
 	free_list(list);
 
