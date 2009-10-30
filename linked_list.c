@@ -117,9 +117,8 @@ char *Pop(node **head) {
 }
 
 int main() {
-	node *list = calloc(1, sizeof(node));
-	printf("Length after allocating: %zu\n", Length(&list));
-	set_node_data(&list, "Alpha");
+	node *list = NULL;
+	create_add_node(&list, "Alpha", START);
 	printf("Length after adding 1 element: %zu\n", Length(&list));
 
 	create_add_node(&list, "Beta", START);
