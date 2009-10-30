@@ -83,12 +83,16 @@ char *GetNth(node **head, int index) {
 
 /* LinkedListProblem.pdf problem #3, although I started writing this before finding that file */
 void free_list(node **head) {
-	// XXX: FIXME!
-	node *n = *head;
-	while ((n = n->next) != NULL) {
-		free(n->next);
+	node *cur = *head;
+	node *next;
+	while (cur != NULL) {
+		printf("About to free node \"%s\", next = %p\n", cur->data, cur->next);
+		next = cur->next;
+		free(cur);
+		cur = next;
 	}
-	free(*head); *head = NULL;
+
+	*head = NULL;
 }
 
 int main() {
@@ -106,9 +110,10 @@ int main() {
 	printf("Count(Omega): %d\n", Count(&list, "Omega"));
 	printf("Count(Delta): %d\n", Count(&list, "Delta"));
 
-	printf("GetNth(0): %s\n", GetNth(&list, 0));
-	printf("GetNth(2): %s\n", GetNth(&list, 2));
-	printf("GetNth(20): %s\n", GetNth(&list, 20));
+	/* Note: These leak, as the caller is responsible for freeing the memory. */
+//	printf("GetNth(0): %s\n", GetNth(&list, 0));
+//	printf("GetNth(2): %s\n", GetNth(&list, 2));
+//	printf("GetNth(20): %s\n", GetNth(&list, 20));
 
 	free_list(&list);
 	return 0;
